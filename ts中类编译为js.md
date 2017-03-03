@@ -39,3 +39,48 @@ console.log(square.shoutout());
 // 只能得到 color 和 area 的值。
 // 另外注意这种创建类的方法
 ```
+
+给 name 添加 public 声明，给color添加private声明。
+
+ts 
+
+```
+class Shape {
+
+    area: number;
+    private color: string;
+    
+    constructor (public name: string, width: number, height: number ) {
+        this.area = width * height;
+        this.color = "pink";
+    };
+ 
+    shoutout() {
+        return "I'm " + this.color + " " + this.name +  " with an area of " + this.area + " cm squared.";
+    }
+}
+ 
+var square = new Shape("square", 30, 30);
+ 
+console.log( square.shoutout() );
+```
+
+js
+
+```
+var Shape = (function () {
+    function Shape(name, width, height) {
+        this.name = name;
+        this.area = width * height;
+        this.color = "pink";
+    }
+    ;
+    Shape.prototype.shoutout = function () {
+        return "I'm " + this.color + " " + this.name + " with an area of " + this.area + " cm squared.";
+    };
+    return Shape;
+}());
+var square = new Shape("square", 30, 30);
+console.log(square.shoutout());
+
+```
