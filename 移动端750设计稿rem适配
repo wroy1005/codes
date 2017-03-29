@@ -1,0 +1,16 @@
+(function(doc, win) {
+    var html = doc.documentElement,
+        resizeEvt = "orientationchange" in window ? "orientationchange" : "resize",
+        eventHandler = function() {
+            var width = html.clientWidth;
+            if (!width) {
+                return
+            }
+            html.style.fontSize = Math.floor((width/(750/100))) + "px"
+        };
+    if (!doc.addEventListener) {
+        return
+    }
+    win.addEventListener(resizeEvt, eventHandler, false);
+    doc.addEventListener("DOMContentLoaded", eventHandler, false)
+})(document, window);
