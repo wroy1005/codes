@@ -1,0 +1,35 @@
+<head>
+    <script>
+    function proxy(url, func) {
+        var isFirst = true,
+            ifr = document.createElement('iframe'),
+            loadFunc = function() {
+                if (isFirst) {
+                    ifr.contentWindow.location = 'http://test.demo.com/';
+                    isFirst = false;
+                } else {
+                    func(ifr.contentWindow.name);
+                    ifr.contentWindow.close();
+                    document.body.removeChild(ifr);
+                    ifr.src = '';
+                    ifr = null;
+                }
+            };
+
+        ifr.src = url;
+        ifr.style.display = 'none';
+        ifr.onload = loadFunc;
+        document.body.appendChild(ifr);
+    }
+    </script>
+</head>
+
+<body>
+    <script>
+    proxy('http://wdp.demo.com/', function(data) {
+        
+    });
+    </script>
+</body>
+
+
