@@ -47,3 +47,44 @@ function centerCurrentPage (total, current, numbers) {
     }
     return result.join();
 }
+
+
+// 方法二
+function show_page(cur_pc) {
+    var cp = cur_pc; //curent page count
+    var tp = this.p; //total page count
+    var sp = this.pc; //show page count
+    var bp; //begin page count
+    var ep; //end page count
+    if (sp % 2 == 0) sp = sp + 1; //this process need an odd number
+    var dp = Math.floor(sp / 2); //each side count to show
+    var dif = tp - sp; //check weather it have enough page to make mid-show
+    var f = cp - dp; //to check weather it has enough page to make mid-show from the begin
+    var g = tp - (cp + dp); //to check weather it has enough page to make mid-show from the end
+    if (sp && dif >= 0) {
+        if (g > 0) {
+            if (f > 0) {
+                bp = f;
+                ep = cp + dp;
+            } else {
+                bp = 1;
+                ep = 2 * dp + 1;
+            }
+        } else {
+            bp = tp - 2 * dp;
+            ep = tp;
+        }
+    } else {
+        bp = 1;
+        ep = tp;
+    }
+    var buf = [];
+    for (var i = bp; i <= ep; i++) {
+        if (i == cur_pc) {
+            buf.push("<a href='javascript:;' class='current'>", i, "</a>");
+        } else {
+            buf.push("<a href='javascript:;' class='normal'>", i, "</a>");
+        }
+    }
+    document.write(buf);
+}
