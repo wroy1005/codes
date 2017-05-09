@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <style>
+    body {
+        overflow: hidden;
+    }
+    
+    div {
+        width: 50px;
+        height: 50px;
+        background: lightgreen;
+    }
+    </style>
+    <script>
+    const winHeight = window.innerHeight;
+    const winWidth = window.innerWidth;
+
+    window.size = function() {
+        return document.querySelectorAll('div').length;
+    }
+    window.log = window.log || window.console.log;
+
+    var Util = {
+        getRandomInt: function(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min;
+        },
+        getRandomLeft: function() {
+            var min = winWidth * 0.3;
+            var max = winWidth * 0.7;
+            return this.getRandomInt(min, max);
+        },
+        getOffsetX: function() {
+            return this.getRandomInt(-150, 150);
+        },
+        getComputedTranslateY: function(obj) {
+            if (!window.getComputedStyle) return;
+            var style = getComputedStyle(obj),
+                transform = style.transform || style.webkitTransform || style.mozTransform;
+            var mat = transform.match(/^matrix3d\((.+)\)$/);
+            if (mat) return parseFloat(mat[1].split(', ')[13]);
+            mat = transform.match(/^matrix\((.+)\)$/);
+            return mat ? parseFloat(mat[1].split(', ')[5]) : 0;
+        }
+    };
+
+    var CONST = {
+        SPENDTIME: '4s',
+        DESTROYTIME: 5000,
+    }
+
+    var Luck = function() {
+        this.ele = document.createElement('div');
+        this.ele.style.position = 'absolute';
+        this.ele.style.left = Util.getRandomLeft() + 'px';
+        this.ele.style.top = 0 - this.ele.clientHeight + 'px';
+        document.body.append(this.ele);
+        this.ele.addEventListener('click', this.clickHandler.bind(this));
+        this.point = {
+            top: this.ele.offsetTop,
+            left: this.ele.offsetLeft
+        };
+        this.run();
+    }
+
+    Luck.prototype = {
+        run: function() {
+            var x = Util.getOffsetX();
+            this.ele.style.transform = "translate(" + x + "px, " + winHeight + "px)";
+            this.ele.style.transition = "transform " + CONST.SPENDTIME + " linear";
+            setTimeout(function() {
+                if (Util.getComputedTranslateY(this.ele) >= winHeight) {
+                    this.destroy();
+                } else {
+                    setTimeout(arguments.callee.bind(this), CONST.DESTROYTIME);
+                }
+            }.bind(this), CONST.DESTROYTIME);
+        },
+        clickHandler: function(event) {
+            this.ele.style.transform = "scale(1.5) translateY(0)";
+            let Y = Util.getComputedTranslateY(this.ele);
+            this.ele.style.transform = "scale(1.5) translateY(" + (Y - 150) + "px)";
+            this.ele.style.transition = "transform 1s ease";
+            setTimeout(function() {
+                this.ele.style.transform = "scale(1) translateY(" + (winHeight) + "px)";
+                this.ele.style.transition = "transform 1s ease";
+            }.bind(this), 800);
+        },
+        destroy: function() {
+            if (this.ele) {
+                this.ele.removeEventListener('click', this.clickHandler);
+                document.body.removeChild(this.ele);
+            }
+        }
+    }
+
+    setInterval(function() {
+        new Luck();
+    }, 300)
+    </script>
+</body>
+
+</html>
