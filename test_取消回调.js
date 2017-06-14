@@ -7,7 +7,7 @@ function timeoutify(fn, delay) {
     return function() {
         if (tid) {
             clearTimeout(tid);
-            fn.apply(this, arguments);
+            fn.apply(this, [null].concat(arguments));
         }
     }
 }
